@@ -28,5 +28,15 @@ func NewDB() (*sql.DB, error) {
 		return nil, err
 	}
 
+	if err = db.Ping(); err != nil {
+		log.Println("Erro ao conectar ao banco de dados:", err)
+		return nil, err
+	}
+	
+	log.Println("Conexão com o banco de dados estabelecida com sucesso!")
+	
+
 	return db, nil
 }
+
+

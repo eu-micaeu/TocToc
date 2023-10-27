@@ -1,45 +1,28 @@
-function login() {
+document.getElementById('btEntrar').addEventListener('click', async function () {
 
-    const email = document.getElementById('email').value;
+    const email = document.querySelector("#email").value;
 
-    const password = document.getElementById('password').value;
+    const senha = document.querySelector("#senha").value;
 
-    const data = { email, password };
+    const respostaLogin = await fetch("/login", {
 
-    fetch('/login', {
+        method: "POST",
 
-        method: 'POST',
-
-        headers: {
-
-            'Content-Type': 'application/json'
-
-        },
-
-        body: JSON.stringify(data)
-
-    })
-
-    .then(response => {
-
-        if (response.ok) {
-
-            window.location.href = '/index';
-
-        } else {
-
-            alert('Email ou senha incorretos');
-
-        }
-
-    })
-
-    .catch(error => {
-
-        alert('Ocorreu um erro ao fazer login');
+        body: JSON.stringify({ email, senha })
 
     });
 
-}
+    const informacoesLogin = await respostaLogin.json();
 
-document.getElementById('btEntrar').addEventListener('click', login);
+    if (informacoesLogin.message === "Login efetuado com sucesso!") {
+
+        window.location.href = "/index";
+
+    } else {
+
+        alert('Ops! Usuário inexistente');
+
+    }
+
+});
+
