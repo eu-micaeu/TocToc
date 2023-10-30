@@ -1,6 +1,6 @@
 document.getElementById('btEntrar').addEventListener('click', async function () {
 
-    const email = document.querySelector("#email").value;
+    const email = document.querySelector("#nickname").value;
 
     const senha = document.querySelector("#senha").value;
 
@@ -8,7 +8,7 @@ document.getElementById('btEntrar').addEventListener('click', async function () 
 
         method: "POST",
 
-        body: JSON.stringify({ email, senha })
+        body: JSON.stringify({ nickname, senha })
 
     });
 

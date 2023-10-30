@@ -2,8 +2,50 @@ body{
 
     margin: 0;
 
-    background-color: #333;
+    background-color: #3e3e3e;
 
     font-family: monospace;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    flex-direction: column;
+
+}
+
+#logoPrincipal{
+
+    padding: 10px;
+
+    margin: 20px;
+
+    border-radius: 5px;
+
+    animation: girar 1s linear infinite;
+
+}
+
+@keyframes girar {
+
+    0% {
+
+        transform: rotate(0deg); /* Rotação de 0 graus*/
+
+    }
+
+    50% {
+
+        transform: rotate(180deg); /* Rotação de 180 graus*/
+
+    }
+
+    100% {
+
+        transform: rotate(360deg); /* Rotação de 360 graus*/
+        
+    }
 
 }
