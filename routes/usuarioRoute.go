@@ -13,6 +13,8 @@ import (
 func UsuarioRoutes(r *gin.Engine, client *redis.Client) {
 	userHandler := handlers.Usuario{}
 
-	r.POST("/login", userHandler.Entrar(client)) 
+	r.POST("/login", userHandler.Entrar(client, "TOCTOCKEYSECRECT"))
+
+	r.POST("/cadastrar", userHandler.Cadastrar(client)) 
 
 }
