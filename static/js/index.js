@@ -1,22 +1,28 @@
-const socket = new WebSocket("wss://servidor-ws.onrender.com/chat");
+document.getElementById('btEntrar').addEventListener('click', async function () {
 
-        socket.onmessage = function(event) {
-            const chat = document.getElementById("chat");
-            const message = JSON.parse(event.data);
-            const p = document.createElement("p");
-            const strong = document.createElement("strong");
-            strong.textContent = message.username + ":";
-            p.appendChild(strong);
-            p.appendChild(document.createTextNode(" " + message.content));
-            chat.appendChild(p);
-        };
+    const nickname = document.querySelector("#nickname").value;
 
-        function sendMessage() {
-            const usernameInput = document.getElementById("username");
-            const messageInput = document.getElementById("message");
-            const username = usernameInput.value;
-            const message = messageInput.value;
-            const msg = { username, content: message };
-            socket.send(JSON.stringify(msg));
-            messageInput.value = "";
-        }
+    const senha = document.querySelector("#senha").value;
+
+    const respostaLogin = await fetch("/login", {
+
+        method: "POST",
+
+        body: JSON.stringify({ nickname, senha })
+
+    });
+
+    const informacoesLogin = await respostaLogin.json();
+
+    if (informacoesLogin.message === "Login efetuado com sucesso!") {
+
+        window.location.href = "/home";
+
+    } else {
+
+        alert('Ops! Usuário inexistente');
+
+    }
+
+});
+

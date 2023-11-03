@@ -36,8 +36,8 @@ func main() {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
 
-	r.GET("/index", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "login.html", nil)
+	r.GET("/home", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "home.html", nil)
 	})
 
 	r.Static("./static", "./static")

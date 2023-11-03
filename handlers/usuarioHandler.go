@@ -6,13 +6,11 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-// Estrutura do usuário.
 type Usuario struct {
 	Nickname string `json:"nickname"`
 	Senha    string `json:"senha"`
 }
 
-// Função com finalidade de login do usuário.
 func (u *Usuario) Entrar(client *redis.Client) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
