@@ -20,7 +20,7 @@ func main() {
 
 	r.Use(middlewares.CorsMiddleware())
 
-	db, err := database.NewDB()
+	db, err := database.NewRedisClient()
 
 	if err != nil {
 

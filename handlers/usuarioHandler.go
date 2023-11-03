@@ -1,27 +1,19 @@
 package handlers
 
-// Importando bibliotecas para a criação da classe e funções do usuário.
 import (
 
-	"database/sql"
-
 	"github.com/gin-gonic/gin"
-
+	"github.com/go-redis/redis/v8"
 )
 
 // Estrutura do usuário.
 type Usuario struct {
-
-	ID_Usuario 	int    `json:"id_usuario"`
-
-	Email   	string `json:"email"`
-
-	Senha      	string `json:"senha"`
-
+	Nickname string `json:"nickname"`
+	Senha    string `json:"senha"`
 }
 
 // Função com finalidade de login do usuário.
-func (u *Usuario) Entrar(db *sql.DB) gin.HandlerFunc {
+func (u *Usuario) Entrar(client *redis.Client) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
@@ -35,20 +27,16 @@ func (u *Usuario) Entrar(db *sql.DB) gin.HandlerFunc {
 
 		}
 
-		row := db.QueryRow("SELECT id_usuario, email, senha FROM usuarios WHERE email = $1 AND senha = $2", usuario.Email, usuario.Senha)
+		val, _ := client.Get(client.Context(), "usuario:" + usuario.Nickname).Result()
 
-		err := row.Scan(&usuario.ID_Usuario, &usuario.Email, &usuario.Senha)
+		if val != usuario.Senha {
 
-		if err != nil {
-
-			c.JSON(404, gin.H{"message": "Usuário ou senha incorretos"})
+			c.JSON(401, gin.H{"message": "Usuário ou senha incorretos"})
 
 			return
 
 		}
 
 		c.JSON(200, gin.H{"message": "Login efetuado com sucesso!"})
-
 	}
-
 }
