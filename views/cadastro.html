@@ -1,40 +1,51 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="pt-br">
 
 <head>
+    <meta charset="UTF-8">
 
-    <title>Cadastro - TocToc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="../static/css/cadastro.css">
+    <title>TocToc - Cadastro</title> 
+
+    <link rel="icon" href="../static/images/logo.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="../static/css/cadastro.css"> 
 
 </head>
 
 <body>
 
-    <img src="../static/images/logo.png" alt="Logo" width="100" height="100" id="logoPrincipal">
+    <main>
+
+        <img src="../static/images/logo.png" alt="Logo do Site" id="logo" width="60" height="60"> 
+
+        <form>
     
-    <form>
+            <label for="usuario" class="rotUsuario">Nickname:</label> 
+    
+            <input type="text" name="nickname" id="nickname" class="inserirTexto"> 
+    
+            <label for="senha" class="rotSenha">Senha:</label> 
+    
+            <input type="password" name="senha" id="senha" class="inserirTexto"> 
+    
+            <label for="confSenha" class="rotConfSenha">Conf. da senha:</label> 
+    
+            <input type="password" name="confSenha" id="confSenha" class="inserirTexto"> 
+    
+            <button type="button" id="btCadastrar">Cadastrar</button> 
+    
+            <button type="button" id="btVoltar" onclick="window.location.href='/'">Voltar</button> 
+    
+        </form>
 
-        <label for="email" id="rotNickname">Nickname</label>
-        
-        <input type="text" id="nickname">
+        <div id="toastCerto" class="hidden">Usuário criado com sucesso!</div>
 
-        <label for="senha" id="rotSenha">Senha</label>
-        
-        <input type="password" id="senha">
+    </main>
 
-        <label for="senha" id="rotSenha">Conf. de Senha</label>
-        
-        <input type="password" id="confSenha">
-
-        <button type="button" id="btCadastrar">Cadastrar</button>
-
-        <button type="button" id="btVoltar" onclick="window.location.href = '/'">Voltar</button>
-
-    </form>
-
-    <script src="../static/js/cadastro.js"></script>
+    <script type="module" src="../static/js/cadastro.mjs"></script> 
 
 </body>
 

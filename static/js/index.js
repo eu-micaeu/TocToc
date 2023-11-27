@@ -16,6 +16,8 @@ document.getElementById('btEntrar').addEventListener('click', async function () 
 
     if (informacoesLogin.message === "Login efetuado com sucesso!") {
 
+        localStorage.setItem('nickname', nickname);
+
         window.location.href = "/home";
 
     } else {

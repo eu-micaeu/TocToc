@@ -8,7 +8,7 @@ document.getElementById('btCadastrar').addEventListener('click', async function 
 
     if (senha != confSenha) {
 
-        alert("Senhas não conferem!");
+        alert("Senhas não conferem!");  
 
         return;
 

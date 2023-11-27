@@ -6,17 +6,23 @@
 
     <title>Home - TocToc</title>
 
+    <link rel="icon" href="../static/images/logo.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="../static/css/home.css"> 
+
 </head>
 
 <body>
 
-    <input type="text" id="username" placeholder="Seu nome">
-
-    <input type="text" id="message" placeholder="Digite uma mensagem">
-
-    <button onclick="sendMessage()">Enviar</button>
-
     <div id="chat"></div>
+
+    <div id="espacoParaEnvioDeMensagens">
+
+        <input type="text" id="message" placeholder="Digite uma mensagem">
+
+        <button onclick="sendMessage()">Enviar</button>
+
+    </div>
 
     <script src="../static/js/home.js"></script>
 
