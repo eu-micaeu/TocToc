@@ -1,36 +1,48 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="pt-br">
 
 <head>
 
-    <title>Login - TocToc</title>
+    <meta charset="UTF-8">
 
-    <link rel="stylesheet" href="../static/css/index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TocToc - Login</title>
+
+    <link rel="icon" href="..\static\images\logo.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="..\static\css\index.css">
 
 </head>
 
 <body>
 
-    <img src="../static/images/logo.png" alt="Logo" width="100" height="100" id="logoPrincipal">
-    
-    <form>
+    <main>
 
-        <label for="email" id="rotNickname">Nickname</label>
-        
-        <input type="text" id="nickname">
+        <img src="../static/images/logo.png" alt="Logo do Site" id="logo" width="60" height="60">
 
-        <label for="senha" id="rotSenha">Senha</label>
-        
-        <input type="password" id="senha">
+        <form>
 
-        <button type="button" id="btEntrar">Entrar</button>
+            <label for="nickname" class="rotUsuario">Nickname:</label>
 
-        <button type="button" id="btCadastro" onclick="window.location.href = '/cadastro'">Cadastro</button>
+            <input type="text" id="nickname" class="inserirTexto">
 
-    </form>
+            <label for="senha" class="rotSenha">Senha:</label>
 
-    <script src="../static/js/index.js"></script>
+            <input type="password" id="senha" class="inserirTexto">
+
+            <button type="button" id="btEntrar">Entrar</button> 
+
+            <button type="button" onclick="window.location.href='/cadastro'" id="btCadastrar">Cadastro</button> 
+
+        </form>
+
+        <div id="toastErrado" class="hidden">Nickname ou senha incorretos!</div>
+
+    </main>
+
+    <script type="module" src="../static/js/login.mjs"></script>
 
 </body>
 
