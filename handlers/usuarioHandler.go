@@ -89,7 +89,7 @@ func (u *Usuario) Cadastrar(client *redis.Client) gin.HandlerFunc {
 		}
 
 		// Verifique se o usuário já existe no Redis
-		existe, _ := client.Exists(client.Context(), "usuario:"+usuario.Nickname).Result()
+		existe, _ := client.Exists(client.Context(), "usuario:" + usuario.Nickname).Result()
 		
 		if existe != 0 {
 			c.JSON(400, gin.H{"message": "Este nome de usuário já está em uso"})

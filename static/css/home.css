@@ -12,9 +12,20 @@
 
     padding: 10px;
 
-    background-color: #000000;
+    border-radius: 0 0 10px 10px;
 
+    border: none;
+
+    border-bottom: 2px solid rgb(255, 255, 255);
+
+    border-right: 2px solid rgb(255, 255, 255);
+
+    border-left: 2px solid rgb(255, 255, 255);
+
+    background-color: #000000;
+    
 }
+
 
 #espacoParaEnvioDeMensagens{
 

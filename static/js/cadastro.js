@@ -28,7 +28,7 @@ document.getElementById('btCadastrar').addEventListener('click', async function 
 
             alert('Registro efetuado com sucesso!');
 
-            window.location.href = "/index";
+            window.location.href = "/";
 
         } else {
 

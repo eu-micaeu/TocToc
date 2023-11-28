@@ -30,6 +30,8 @@ func main() {
 
 	routes.UsuarioRoutes(r, db)
 
+	routes.MensagemRoutes(r, db)
+
 	r.LoadHTMLGlob("./views/*.html")
 
 	r.GET("/", func(c *gin.Context) {
