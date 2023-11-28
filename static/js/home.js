@@ -27,6 +27,15 @@ function carregarMensagens() {
 
 document.addEventListener("DOMContentLoaded", carregarMensagens);
 
+document.addEventListener("DOMContentLoaded", function() {
+    const messageInput = document.getElementById("message");
+    messageInput.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    });
+});
+
 
 
 socket.onmessage = function (event) {
@@ -54,41 +63,30 @@ socket.onmessage = function (event) {
 }
 
 function sendMessage() {
-
     const messageInput = document.getElementById("message");
-
     const message = messageInput.value;
-
     const msg = { usuario: nickname, texto: message };
 
     socket.send(JSON.stringify(msg));
 
     fetch("/enviar", {
-
         method: "POST",
-
         body: JSON.stringify(msg),
-
         headers: {
-
             'Content-Type': 'application/json'
         }
-
     }).then(response => {
-
-        if(response.ok) {
-
+        if (response.ok) {
             console.log(msg);
-
-            return console.log(response.json());
-
+            return response.json();
         } else {
-
             throw new Error('Erro na resposta da rede');
         }
-
-    })
+    }).then(() => {
+        // Após enviar a mensagem e receber a resposta, rola a área do chat para baixo
+        const chatArea = document.getElementById("chat");
+        chatArea.scrollTop = chatArea.scrollHeight;
+    });
 
     messageInput.value = "";
-
 }

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -48,28 +49,43 @@ func (m *Mensagem) EnviarMensagem(client *redis.Client) gin.HandlerFunc {
 func (m *Mensagem) ListarMensagens(client *redis.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
+		// Cria uma slice para armazenar as mensagens
 		var mensagens []Mensagem
 
+		// Obtém todas as chaves do padrão "mensagem:*" no Redis
 		mensagensRedis, err := client.Keys(client.Context(), "mensagem:*").Result()
 
+		// Verifica se houve algum erro ao obter as chaves
 		if err != nil {
 			c.JSON(500, gin.H{"message": "Erro ao listar mensagens"})
 			return
 		}
 
+		// Itera sobre as chaves obtidas do Redis
 		for _, mensagemRedis := range mensagensRedis {
 
+			// Extrai o texto da mensagem da chave
 			texto := mensagemRedis[strings.Index(mensagemRedis, ":")+1:]
 
+			// Cria uma instância da estrutura Mensagem e popula seus campos
 			mensagem := Mensagem{
 				Texto:       texto,
-				Usuario:    client.LIndex(client.Context(), mensagemRedis, 0).Val(),
+				Usuario:     client.LIndex(client.Context(), mensagemRedis, 0).Val(),
 				DataDeEnvio: client.LIndex(client.Context(), mensagemRedis, 1).Val(),
 			}
 
+			// Adiciona a mensagem à slice de mensagens
 			mensagens = append(mensagens, mensagem)
 		}
 
+		// Ordena as mensagens pela data de envio (da mais antiga para a mais recente)
+		sort.Slice(mensagens, func(i, j int) bool {
+			return mensagens[i].DataDeEnvio < mensagens[j].DataDeEnvio
+		})
+
+		// Retorna as mensagens em formato JSON
 		c.JSON(200, gin.H{"mensagens": mensagens})
 	}
 }
+
+
