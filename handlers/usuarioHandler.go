@@ -1,70 +1,59 @@
 package handlers
 
+// Importando bibliotecas para a criação da classe e funções do usuário.
 import (
+
+	"database/sql"
 	"net/http"
 	"time"
-
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis/v8"
+
 )
 
+// Estrutura do usuário.
 type Usuario struct {
-	Nickname string `json:"nickname"`
-	Senha    string `json:"senha"`
+
+	ID_Usuario 	int    `json:"id_usuario"`
+	Nickname   	string `json:"nickname"`
+	Senha      	string `json:"senha"`
+
 }
 
-// Estrutura do TOKEN.
-type Claims struct {
-	Nickname string `json:"nickname"`
-	jwt.StandardClaims
-}
+func (u *Usuario) Entrar(db *sql.DB) gin.HandlerFunc {
 
-func GerarToken(nickname string, secretKey string) (string, error) {
-	claims := Claims{
-		Nickname: nickname,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), // Token expira em 24 horas
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(secretKey))
-	if err != nil {
-		return "", err
-	}
-
-	return tokenString, nil
-}
-
-func (u *Usuario) Entrar(client *redis.Client, secretKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
+
 		var usuario Usuario
 
 		if err := c.BindJSON(&usuario); err != nil {
+
 			c.JSON(400, gin.H{"message": "Erro ao fazer login"})
+
 			return
+
 		}
 
-		val, _ := client.Get(client.Context(), "usuario:"+usuario.Nickname).Result()
+		row := db.QueryRow("SELECT id_usuario, nickname, senha FROM usuarios WHERE nickname = $1 AND senha = $2", usuario.Nickname, usuario.Senha)
 
-		if val != usuario.Senha {
-			c.JSON(401, gin.H{"message": "Usuário ou senha incorretos"})
-			return
-		}
+		err := row.Scan(&usuario.ID_Usuario, &usuario.Nickname, &usuario.Senha)
 
-		// Gere o token
-		token, err := GerarToken(usuario.Nickname, secretKey)
 		if err != nil {
-			c.JSON(500, gin.H{"message": "Erro ao gerar token"})
+
+			c.JSON(404, gin.H{"message": "Usuário ou senha incorretos"})
+
 			return
+
 		}
-		
+
+		token, _ := GerarOToken(usuario)
+
 		http.SetCookie(c.Writer, &http.Cookie{
 
 			Name:     "token",
 
 			Value:    token,
+
+			Expires:  time.Now().Add(24 * time.Hour),
 
 			HttpOnly: true,
 
@@ -74,35 +63,38 @@ func (u *Usuario) Entrar(client *redis.Client, secretKey string) gin.HandlerFunc
 
 		})
 
-		c.JSON(200, gin.H{"message": "Login efetuado com sucesso!"})
+		c.JSON(200, gin.H{"message": "Login efetuado com sucesso!", "token": token, "usuario": usuario})
+
 	}
+
 }
 
 
-func (u *Usuario) Cadastrar(client *redis.Client) gin.HandlerFunc {
+func (u *Usuario) Cadastrar(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var usuario Usuario
 
-		if err := c.BindJSON(&usuario); err != nil {
-			c.JSON(400, gin.H{"message": "Erro ao registrar usuário"})
+		var novoUsuario Usuario
+
+		if err := c.BindJSON(&novoUsuario); err != nil {
+
+			c.JSON(400, gin.H{"message": "Erro ao criar usuario"})
+
 			return
+
 		}
 
-		// Verifique se o usuário já existe no Redis
-		existe, _ := client.Exists(client.Context(), "usuario:" + usuario.Nickname).Result()
-		
-		if existe != 0 {
-			c.JSON(400, gin.H{"message": "Este nome de usuário já está em uso"})
-			return
-		}
+		_, err := db.Exec("INSERT INTO usuarios (nickname, senha) VALUES ($1, $2)", novoUsuario.Nickname, novoUsuario.Senha)
 
-		err := client.Set(client.Context(), "usuario:"+usuario.Nickname, usuario.Senha, 0).Err()
 		if err != nil {
-			c.JSON(500, gin.H{"message": "Erro ao registrar usuário"})
+
+			c.JSON(500, gin.H{"message": "Erro ao criar usuário"})
+
 			return
+
 		}
 
-		c.JSON(200, gin.H{"message": "Registro bem-sucedido"})
+		c.JSON(200, gin.H{"message": "Usuário criado com sucesso!"})
+
 	}
 }
 

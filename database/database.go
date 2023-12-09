@@ -1,33 +1,29 @@
 package database
 
 import (
+	"database/sql"
+	"fmt"
 	"log"
 
-	"github.com/go-redis/redis/v8"
+	_ "github.com/lib/pq"
 )
 
-// Função para criar e conectar a um banco de dados Redis
-func NewRedisClient() (*redis.Client, error) {
+func NewDB() (*sql.DB, error) {
 
-	// URL de conexão Redis
-    redisURL := "rediss://red-cl22t48p2gis73fu5ja0:d2JNtmfp3LyPOp5gBXVlU4lQRoLsowBq@oregon-redis.render.com:6379"
+	dbUser := "root"
+	dbPassword := "wAAIT5t8pqS3YozQ1i698A7nstL6Kft2"
+	dbHost := "dpg-clnrdu0fvntc739faddg-a.oregon-postgres.render.com"
+	dbPort := "5432"
+	dbName := "toctoc"
 
-    // Crie uma nova opção de conexão usando a URL
-    options, err := redis.ParseURL(redisURL)
-    if err != nil {
-        log.Fatal("Erro ao analisar a URL de conexão:", err)
-    }
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=require", dbUser, dbPassword, dbHost, dbPort, dbName) // String utilizada para criar a URL da conexão
 
-    // Crie o cliente Redis
-    client := redis.NewClient(options)
+	db, err := sql.Open("postgres", dsn) // Função SQL para abrir a conexão
 
-    // Verifique a conexão com o servidor
-    _, err = client.Ping(client.Context()).Result()
-    if err != nil {
-        log.Fatal("Erro ao conectar ao banco Redis:", err)
-    }
+	if err != nil {
+		log.Println("Erro ao conectar ao banco de dados:", err)
+		return nil, err
+	}
 
-    log.Println("Conexão com o banco Redis estabelecida com sucesso!")
-
-	return client, nil
+	return db, nil
 }

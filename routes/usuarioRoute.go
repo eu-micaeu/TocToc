@@ -1,20 +1,21 @@
 package routes
 
 import (
+	
+	"database/sql"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/eu-micaeu/TocToc/handlers"
 
-	"github.com/go-redis/redis/v8"
-
 )
 
-func UsuarioRoutes(r *gin.Engine, client *redis.Client) {
+func UsuarioRoutes(r *gin.Engine, db *sql.DB) {
+
 	usuarioHandler := handlers.Usuario{}
 
-	r.POST("/login", usuarioHandler.Entrar(client, "TOCTOCKEYSECRECT"))
+	r.POST("/login", usuarioHandler.Entrar(db))
 
-	r.POST("/cadastrar", usuarioHandler.Cadastrar(client)) 
+	r.POST("/cadastrar", usuarioHandler.Cadastrar(db)) 
 
 }

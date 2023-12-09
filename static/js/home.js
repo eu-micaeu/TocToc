@@ -1,31 +1,18 @@
-const socket = new WebSocket("wss://servidor-ws.onrender.com/chat");
+var socket = new WebSocket('wss://servidor-ws.onrender.com/chat');
+
+socket.onclose = function(e) {
+  console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+  setTimeout(function() {
+    connect();
+  }, 1000);
+};
+
+socket.onerror = function(err) {
+  console.error('Socket encountered error: ', err.message, 'Closing socket');
+  socket.close();
+};
 
 const nickname = localStorage.getItem('nickname');
-
-function carregarMensagens() {
-    fetch("/listar")
-        .then(response => response.json())
-        .then(data => {
-            const chat = document.getElementById("chat");
-            chat.innerHTML = "";
-
-            for (let i = 0; i < data.mensagens.length; i++) {
-                const mensagem = data.mensagens[i];
-                const mensagemTexto = document.createElement("p");
-                mensagemTexto.textContent = mensagem.usuario + ": " + mensagem.texto;
-                if (mensagem.usuario !== nickname) {
-                    mensagemTexto.style.textAlign = "right";
-                }
-                mensagemTexto.style.color = "white";
-                chat.appendChild(mensagemTexto);
-            }
-        })
-        .catch(error => {
-            console.error("Erro ao carregar as mensagens:", error);
-        });
-}
-
-document.addEventListener("DOMContentLoaded", carregarMensagens);
 
 document.addEventListener("DOMContentLoaded", function() {
     const messageInput = document.getElementById("message");
@@ -36,8 +23,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-
-
 socket.onmessage = function (event) {
 
     const chat = document.getElementById("chat");
@@ -46,13 +31,7 @@ socket.onmessage = function (event) {
 
     const mensagem = document.createElement("p");
 
-    if (message.usuario !== nickname) {
-
-        mensagem.style.textAlign = "right";
-
-    }
-
-    mensagem.textContent = message.usuario + ":";
+    mensagem.textContent = message.nickname + ":";
 
     mensagem.appendChild(document.createTextNode(" " + message.texto));
 
@@ -62,30 +41,50 @@ socket.onmessage = function (event) {
 
 }
 
+function isOpen(ws) { 
+    return ws.readyState === ws.OPEN; 
+}
+
 function sendMessage() {
     const messageInput = document.getElementById("message");
     const message = messageInput.value;
-    const msg = { usuario: nickname, texto: message };
+
+    const msg = { nickname: nickname, texto: message };
+
+    if (!isOpen(socket)) return;
 
     socket.send(JSON.stringify(msg));
 
     fetch("/enviar", {
+
         method: "POST",
+
         body: JSON.stringify(msg),
+
         headers: {
             'Content-Type': 'application/json'
         }
+
     }).then(response => {
+
         if (response.ok) {
+
             console.log(msg);
+
             return response.json();
+
         } else {
+
             throw new Error('Erro na resposta da rede');
+
         }
+
     }).then(() => {
-        // Após enviar a mensagem e receber a resposta, rola a área do chat para baixo
+
         const chatArea = document.getElementById("chat");
+
         chatArea.scrollTop = chatArea.scrollHeight;
+
     });
 
     messageInput.value = "";
