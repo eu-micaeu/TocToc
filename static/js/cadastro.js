@@ -24,9 +24,9 @@ document.getElementById('btCadastrar').addEventListener('click', async function 
 
         const informacoesLogin = await respostaLogin.json();
 
-        if (informacoesLogin.message === "Registro bem-sucedido") {
+        if (informacoesLogin.message === "Usuário criado com sucesso!") {
 
-            alert('Registro efetuado com sucesso!');
+            alert('Usuário criado com sucesso!');
 
             window.location.href = "/";
 
