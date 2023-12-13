@@ -76,3 +76,28 @@ func (m *Mensagem) Enviar(db *sql.DB) gin.HandlerFunc {
 	}
 
 }
+
+func (m *Mensagem) Listar(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		query := "SELECT * FROM mensagens ORDER BY data_de_envio ASC"
+		rows, err := db.Query(query)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve messages from database"})
+			return
+		}
+		defer rows.Close()
+
+		var mensagens []Mensagem
+		for rows.Next() {
+			var mensagem Mensagem
+			err := rows.Scan(&mensagem.ID_Mensagem, &mensagem.Nickname, &mensagem.Texto, &mensagem.DataDeEnvio)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve messages from database"})
+				return
+			}
+			mensagens = append(mensagens, mensagem)
+		}
+
+		c.JSON(http.StatusOK, mensagens)
+	}
+}

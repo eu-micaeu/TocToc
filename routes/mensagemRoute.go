@@ -14,4 +14,6 @@ func MensagemRoutes(r *gin.Engine, db *sql.DB) {
 
 	r.POST("/enviar", mensagemHandler.Enviar(db))
 
+	r.GET("/mensagens", mensagemHandler.Listar(db))
+
 }
